@@ -2,8 +2,6 @@ import csv
 from datetime import datetime
 import os
 
-DEBUG = True
-
 class ExpenseTracker:
     def __init__(self, filename='expenses.csv'):
         """
