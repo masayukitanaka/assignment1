@@ -2,6 +2,8 @@ import csv
 from datetime import datetime
 import os
 
+DEBUG = True
+
 class ExpenseTracker:
     def __init__(self, filename='expenses.csv'):
         """
@@ -18,38 +20,10 @@ class ExpenseTracker:
         """
         while True:
             try:
-                # Date input with validation
-                while True:
-                    date_str = input("Enter expense date (YYYY-MM-DD): ")
-                    try:
-                        # Validate date format
-                        datetime.strptime(date_str, '%Y-%m-%d')
-                        break
-                    except ValueError:
-                        print("Invalid date format. Please use YYYY-MM-DD.")
-
-                # Category input
-                category = input("Enter expense category (e.g., Food, Travel): ").strip()
-                if not category:
-                    print("Category cannot be empty.")
-                    continue
-
-                # Amount input with validation
-                while True:
-                    try:
-                        amount = float(input("Enter expense amount: "))
-                        if amount <= 0:
-                            print("Amount must be a positive number.")
-                            continue
-                        break
-                    except ValueError:
-                        print("Invalid amount. Please enter a numeric value.")
-
-                # Description input
-                description = input("Enter expense description: ").strip()
-                if not description:
-                    print("Description cannot be empty.")
-                    continue
+                date_str = self.get_valid_date()
+                category = self.get_non_empty_input("Enter expense category (e.g., Food, Travel): ")
+                amount = self.get_positive_float("Enter expense amount: ")
+                description = self.get_non_empty_input("Enter expense description: ")
 
                 # Create expense dictionary
                 expense = {
@@ -66,6 +40,32 @@ class ExpenseTracker:
 
             except Exception as e:
                 print(f"An error occurred: {e}")
+
+    def get_valid_date(self):
+        while True:
+            date_str = input("Enter expense date (YYYY-MM-DD): ")
+            try:
+                datetime.strptime(date_str, '%Y-%m-%d')
+                return date_str
+            except ValueError:
+                print("Invalid date format. Please use YYYY-MM-DD.")
+
+    def get_non_empty_input(self, prompt):
+        while True:
+            value = input(prompt).strip()
+            if value:
+                return value
+            print("Input cannot be empty.")
+
+    def get_positive_float(self, prompt):
+        while True:
+            try:
+                value = float(input(prompt))
+                if value > 0:
+                    return value
+                print("Amount must be a positive number.")
+            except ValueError:
+                print("Invalid amount. Please enter a numeric value.")
 
     def view_expenses(self):
         """
@@ -166,18 +166,21 @@ class ExpenseTracker:
         except Exception as e:
             print(f"Error loading expenses: {e}")
 
+    def show_menu(self):
+        print("\n--- Personal Expense Tracker ---")
+        print("[1] Add Expense")
+        print("[2] View Expenses")
+        print("[3] Set Budget")
+        print("[4] Track Budget")
+        print("[5] Save Expenses")
+        print("[6] Exit")
+
     def run(self):
         """
         Main menu-driven interface for the expense tracker
         """
         while True:
-            print("\n--- Personal Expense Tracker ---")
-            print("1. Add Expense")
-            print("2. View Expenses")
-            print("3. Track Budget")
-            print("4. Save Expenses")
-            print("5. Exit")
-
+            self.show_menu()
             choice = input("Enter your choice (1-5): ")
 
             if choice == '1':
@@ -185,10 +188,12 @@ class ExpenseTracker:
             elif choice == '2':
                 self.view_expenses()
             elif choice == '3':
-                self.track_budget()
+                self.set_budget()
             elif choice == '4':
-                self.save_expenses()
+                self.track_budget()
             elif choice == '5':
+                self.save_expenses()
+            elif choice == '6':
                 self.save_expenses()
                 print("Exiting Expense Tracker. Goodbye!")
                 break
