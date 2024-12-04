@@ -102,7 +102,9 @@ class ExpenseTracker:
         Calculate and display budget tracking information
         """
         if self.monthly_budget == 0:
-            print("No monthly budget set. Please set a budget first.")
+            print("No monthly budget set. Would you like to set a budget? [y/n]")
+            if input().lower() == 'y':
+                self.set_budget()
             return
 
         total_expenses = sum(expense['amount'] for expense in self.expenses)
@@ -168,10 +170,9 @@ class ExpenseTracker:
         print("\n--- Personal Expense Tracker ---")
         print("[1] Add Expense")
         print("[2] View Expenses")
-        print("[3] Set Budget")
-        print("[4] Track Budget")
-        print("[5] Save Expenses")
-        print("[6] Exit")
+        print("[3] Track Budget")
+        print("[4] Save Expenses")
+        print("[5] Exit")
 
     def run(self):
         """
@@ -186,12 +187,10 @@ class ExpenseTracker:
             elif choice == '2':
                 self.view_expenses()
             elif choice == '3':
-                self.set_budget()
-            elif choice == '4':
                 self.track_budget()
-            elif choice == '5':
+            elif choice == '4':
                 self.save_expenses()
-            elif choice == '6':
+            elif choice == '5':
                 self.save_expenses()
                 print("Exiting Expense Tracker. Goodbye!")
                 break
